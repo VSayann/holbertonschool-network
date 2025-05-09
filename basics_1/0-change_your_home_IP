@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-# This script onfigures an Ubuntu server with the below requirements
-cp /etc/hosts /etc/hosts.bak
-sed -i '/127.0.0.1/d' /etc/hosts
-sed -i '/facebook.com/d' /etc/hosts
-{
-    echo "127.0.0.2 localhost"
-    echo "8.8.8.8 facebook.com"
- } >>  /etc/hosts
- 
+# Script that modifies local DNS resolutions:
+
+# Creates a copy of the original hosts file
+cp /etc/hosts ~/hosts.new
+
+# Changes the IP address of localhost to 127.0.0.2
+sed -i 's/127.0.0.1\slocalhost/127.0.0.2 localhost/g' ~/hosts.new
+
+# Adds an entry for facebook.com pointing to 8.8.8.8
+echo "8.8.8.8 facebook.com" >> ~/hosts.new
+
+# Replaces the original hosts file with our modified version
+cp -f ~/hosts.new /etc/hosts
+
+# Cleanup - removes the temporary file
+rm ~/hosts.new
