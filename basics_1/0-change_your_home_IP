@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script onfigures an Ubuntu server with the below requirements
+cp /etc/hosts /etc/hosts.bak
+sed -i '/127.0.0.1/d' /etc/hosts
+sed -i '/facebook.com/d' /etc/hosts
+{
+    echo "127.0.0.2 localhost"
+    echo "8.8.8.8 facebook.com"
+ } >>  /etc/hosts
+ 
