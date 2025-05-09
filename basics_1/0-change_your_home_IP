@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Script that modifies local DNS resolutions:
+# - localhost -> 127.0.0.2
+# - facebook.com -> 8.8.8.8
 
 # Creates a copy of the original hosts file
 cp /etc/hosts ~/hosts.new
