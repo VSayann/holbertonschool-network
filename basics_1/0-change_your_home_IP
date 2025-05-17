@@ -1,25 +1,22 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # This script replaces localhost with 127.0.0.2 and facebook.com with 8.8.8.8 in /etc/hosts
 
-set -euo pipefail
-
 HOSTS_FILE="/etc/hosts"
+TMP_FILE="$(mktemp)"
 
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run as root." >&2
+if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-cp "$HOSTS_FILE" "${HOSTS_FILE}.bak"
-
-# Remove existing entries
-grep -vE '\slocalhost\b|\sfacebook\.com\b' "$HOSTS_FILE" > /tmp/hosts.tmp
-
-# Add mappings
+awk '
 {
-  echo "127.0.0.2 localhost"
-  echo "8.8.8.8 facebook.com"
-} >> /tmp/hosts.tmp
+  if ($1 == "127.0.0.1" && ($0 ~ /[[:space:]]localhost([[:space:]]|$)/)) {
+    $1 = "127.0.0.2"
+  }
+  print
+}' "$HOSTS_FILE" > "$TMP_FILE" && cp "$TMP_FILE" "$HOSTS_FILE"
 
-mv /tmp/hosts.tmp "$HOSTS_FILE"
-chmod 644 "$HOSTS_FILE"
+grep -q -E '^[[:space:]]*8\.8\.8\.8[[:space:]]+facebook\.com' "$HOSTS_FILE" || \
+  echo "8.8.8.8 facebook.com" >> "$HOSTS_FILE"
+
+rm -f "$TMP_FILE"
