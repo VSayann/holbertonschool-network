@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This script replaces localhost with 127.0.0.2 and facebook.com with 8.8.8.8 in /etc/hosts
 
 HOSTS_FILE="/etc/hosts"
